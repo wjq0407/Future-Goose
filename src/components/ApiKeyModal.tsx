@@ -53,21 +53,24 @@ export function ApiKeyModal() {
           </div>
         </div>
 
-        <input
-          type="password"
-          value={inputKey}
-          onChange={(e) => setInputKey(e.target.value)}
-          placeholder="请输入你的智谱API Key"
-          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
-        />
+        <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+          <input
+            type="password"
+            value={inputKey}
+            onChange={(e) => setInputKey(e.target.value)}
+            placeholder="请输入你的智谱API Key"
+            autoComplete="off"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
+          />
 
-        <input
-          type="text"
-          value={inputBaseUrl}
-          onChange={(e) => setInputBaseUrl(e.target.value)}
-          placeholder="API Base URL"
-          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-        />
+          <input
+            type="text"
+            value={inputBaseUrl}
+            onChange={(e) => setInputBaseUrl(e.target.value)}
+            placeholder="API Base URL"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+          />
+        </form>
 
         <div className="flex gap-2">
           <button
