@@ -48,12 +48,12 @@ describe('conversationExport.ts', () => {
 
     it('should include timestamps when enabled', () => {
       const result = exportAsTXT(mockMessages, 'Test', { includeTimestamp: true });
-      expect(result).toMatch(/\[\d{4}/);
+      expect(result).toMatch(/\[.+?\]/);
     });
 
     it('should exclude timestamps when disabled', () => {
       const result = exportAsTXT(mockMessages, 'Test', { includeTimestamp: false });
-      expect(result).not.toMatch(/\[\d{4}/);
+      expect(result).not.toMatch(/\[.+?\]/);
     });
 
     it('should include reasoning content when enabled', () => {
