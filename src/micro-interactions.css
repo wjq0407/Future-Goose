@@ -1,0 +1,477 @@
+/* ===== 微交互规范系统 (Micro-Interaction System) ===== */
+/* 版本: v1.0 | 设计原则: 所有交互反馈≤150ms,使用GPU加速属性(transform + opacity) */
+
+/* ===== 1. 按钮交互规范 ===== */
+
+/* 基础按钮 - hover 上移 + 阴影增强 */
+.btn-micro {
+  transition: transform var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out),
+              opacity var(--duration-fast) var(--ease-out);
+  will-change: transform, box-shadow;
+}
+
+.btn-micro:hover {
+  transform: translateY(-2px) translateZ(0);
+}
+
+.btn-micro:active {
+  transform: translateY(0) scale(0.98) translateZ(0);
+  transition-duration: var(--duration-instant);
+}
+
+/* 主按钮 - 品牌色渐变 + 阴影扩散 */
+.btn-primary-micro {
+  position: relative;
+  overflow: hidden;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.btn-primary-micro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.btn-primary-micro:hover::before {
+  opacity: 1;
+}
+
+.btn-primary-micro:hover {
+  box-shadow: 0 6px 20px rgba(0, 82, 217, 0.35);
+  transform: translateY(-2px) translateZ(0);
+}
+
+.btn-primary-micro:active {
+  box-shadow: 0 2px 8px rgba(0, 82, 217, 0.25);
+  transform: translateY(0) scale(0.98) translateZ(0);
+}
+
+/* 次要按钮 - 边框变色 + 轻微阴影 */
+.btn-secondary-micro {
+  transition: all var(--duration-fast) var(--ease-out);
+  border: 2px solid var(--border-color-base);
+}
+
+.btn-secondary-micro:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  box-shadow: 0 2px 8px rgba(0, 82, 217, 0.15);
+  transform: translateY(-1px) translateZ(0);
+}
+
+.btn-secondary-micro:active {
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 1px 4px rgba(0, 82, 217, 0.1);
+  transform: translateY(0) scale(0.98) translateZ(0);
+}
+
+/* 禁用态按钮 */
+.btn-micro:disabled,
+.btn-micro[data-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+}
+
+/* 按钮加载状态 */
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  margin-left: -8px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: btn-spin 0.6s linear infinite;
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg) translateZ(0); }
+}
+
+/* ===== 2. 卡片交互规范 ===== */
+
+/* 基础卡片 hover 上移 + 阴影加深 + 边框变色 */
+.card-micro {
+  transition: transform var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out);
+  will-change: transform, box-shadow;
+}
+
+.card-micro:hover {
+  transform: translateY(-4px) translateZ(0);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-primary-light);
+}
+
+.card-micro:active {
+  transform: translateY(-2px) scale(0.995) translateZ(0);
+  transition-duration: var(--duration-fast);
+}
+
+/* 生长感卡片 hover - 更强的上移动画 */
+.card-grow-micro {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow var(--duration-normal) var(--ease-out);
+  will-change: transform, box-shadow;
+}
+
+.card-grow-micro:hover {
+  transform: translateY(-8px) scale(1.02) translateZ(0);
+  box-shadow: 0 12px 32px rgba(0, 82, 217, 0.15),
+              0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.dark .card-grow-micro:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4),
+              0 0 24px rgba(90, 156, 255, 0.1);
+}
+
+/* 卡片点击缩放反馈 */
+.card-click-micro:active {
+  transform: scale(0.98) translateZ(0);
+  transition-duration: var(--duration-fast);
+}
+
+/* 卡片加载 shimmer 扫光效果 */
+.card-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 1000px 100%;
+  transform: translateX(-100%);
+  animation: shimmer-sweep 2s linear infinite;
+}
+
+.dark .card-shimmer::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+}
+
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-100%) translateZ(0); }
+  100% { transform: translateX(100%) translateZ(0); }
+}
+
+/* ===== 3. 表单交互规范 ===== */
+
+/* 输入框聚焦 - 边框变色 + 外发光 */
+.input-micro {
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out);
+}
+
+.input-micro:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 82, 217, 0.15);
+  outline: none;
+}
+
+.dark .input-micro:focus {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 3px rgba(75, 142, 255, 0.25);
+}
+
+/* 选项选择 - 填充动画 */
+.option-micro {
+  position: relative;
+  overflow: hidden;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.option-micro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary-light);
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.option-micro:hover::before {
+  opacity: 0.1;
+  transform: scale(1);
+}
+
+.option-micro.selected::before {
+  opacity: 0.15;
+  transform: scale(1);
+}
+
+.option-micro.selected {
+  border-color: var(--color-primary);
+}
+
+/* 提交按钮加载状态 */
+.submit-loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.submit-loading .submit-icon {
+  animation: submit-rotate 1s linear infinite;
+}
+
+@keyframes submit-rotate {
+  0% { transform: rotate(0deg) translateZ(0); }
+  100% { transform: rotate(360deg) translateZ(0); }
+}
+
+/* ===== 4. 列表交互规范 ===== */
+
+/* 条目入场 - staggered 淡入上滑 */
+.list-item-enter {
+  opacity: 0;
+  transform: translateY(20px) translateZ(0);
+  animation: list-item-fade-in var(--duration-slow) var(--ease-out) forwards;
+}
+
+@keyframes list-item-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+  }
+}
+
+/* Staggered 延迟工具类 */
+.list-item-enter:nth-child(1) { animation-delay: 0ms; }
+.list-item-enter:nth-child(2) { animation-delay: 50ms; }
+.list-item-enter:nth-child(3) { animation-delay: 100ms; }
+.list-item-enter:nth-child(4) { animation-delay: 150ms; }
+.list-item-enter:nth-child(5) { animation-delay: 200ms; }
+.list-item-enter:nth-child(6) { animation-delay: 250ms; }
+.list-item-enter:nth-child(7) { animation-delay: 300ms; }
+.list-item-enter:nth-child(8) { animation-delay: 350ms; }
+.list-item-enter:nth-child(9) { animation-delay: 400ms; }
+.list-item-enter:nth-child(10) { animation-delay: 450ms; }
+
+/* 删除条目 - 收起动画 */
+.list-item-exit {
+  animation: list-item-shrink var(--duration-slow) var(--ease-in) forwards;
+}
+
+@keyframes list-item-shrink {
+  0% {
+    opacity: 1;
+    transform: scaleY(1) translateZ(0);
+    max-height: 1000px;
+    margin-bottom: var(--space-4);
+  }
+  30% {
+    opacity: 0.5;
+    transform: scaleY(0.95) translateZ(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(0) translateZ(0);
+    max-height: 0;
+    margin-bottom: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+}
+
+/* 排序 - 平滑位置交换 */
+.list-item-reorder {
+  transition: transform var(--duration-slow) var(--ease-out);
+  will-change: transform;
+}
+
+/* 列表项 hover 反馈 */
+.list-item-micro {
+  transition: background-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+.list-item-micro:hover {
+  background-color: var(--color-primary-light);
+  transform: translateX(4px) translateZ(0);
+}
+
+/* ===== 5. 通用微交互工具类 ===== */
+
+/* 淡入动画 - 150ms */
+.fade-in-micro {
+  animation: micro-fade-in var(--duration-fast) var(--ease-out) forwards;
+}
+
+@keyframes micro-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* 上滑淡入动画 - 250ms */
+.slide-up-micro {
+  animation: micro-slide-up var(--duration-normal) var(--ease-out) forwards;
+}
+
+@keyframes micro-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+  }
+}
+
+/* 缩放淡入动画 - 200ms */
+.scale-in-micro {
+  animation: micro-scale-in 0.2s var(--ease-out) forwards;
+}
+
+@keyframes micro-scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+}
+
+/* 弹跳缩放动画 - 用于成功反馈 */
+.bounce-micro {
+  animation: micro-bounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes micro-bounce {
+  0% { transform: scale(0.9) translateZ(0); }
+  50% { transform: scale(1.05) translateZ(0); }
+  100% { transform: scale(1) translateZ(0); }
+}
+
+/* 摇摆动画 - 用于错误反馈 */
+.shake-micro {
+  animation: micro-shake 0.4s var(--ease-out) forwards;
+}
+
+@keyframes micro-shake {
+  0%, 100% { transform: translateX(0) translateZ(0); }
+  20% { transform: translateX(-4px) translateZ(0); }
+  40% { transform: translateX(4px) translateZ(0); }
+  60% { transform: translateX(-2px) translateZ(0); }
+  80% { transform: translateX(2px) translateZ(0); }
+}
+
+/* 脉冲动画 - 用于强调元素 */
+.pulse-micro {
+  animation: micro-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes micro-pulse {
+  0%, 100% {
+    transform: scale(1) translateZ(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05) translateZ(0);
+    opacity: 0.8;
+  }
+}
+
+/* 旋转加载 - 1s 匀速 */
+.spin-micro {
+  animation: micro-spin 1s linear infinite;
+}
+
+@keyframes micro-spin {
+  0% { transform: rotate(0deg) translateZ(0); }
+  100% { transform: rotate(360deg) translateZ(0); }
+}
+
+/* 呼吸动画 - 用于空状态引导 */
+.breathe-micro {
+  animation: micro-breathe 3s ease-in-out infinite;
+}
+
+@keyframes micro-breathe {
+  0%, 100% {
+    transform: scale(1) translateZ(0);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.02) translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* 滑动指示器 - 用于滚动提示 */
+.scroll-hint-micro {
+  animation: micro-scroll-hint 2s ease-in-out infinite;
+}
+
+@keyframes micro-scroll-hint {
+  0%, 100% { transform: translateY(0) translateZ(0); }
+  50% { transform: translateY(8px) translateZ(0); }
+}
+
+/* ===== 6. Prefers Reduced Motion 支持 ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-micro,
+  .btn-primary-micro,
+  .btn-secondary-micro,
+  .card-micro,
+  .card-grow-micro,
+  .card-click-micro,
+  .input-micro,
+  .option-micro,
+  .list-item-micro,
+  .list-item-enter,
+  .list-item-exit,
+  .list-item-reorder {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  .fade-in-micro,
+  .slide-up-micro,
+  .scale-in-micro,
+  .bounce-micro,
+  .shake-micro,
+  .pulse-micro,
+  .spin-micro,
+  .breathe-micro,
+  .scroll-hint-micro {
+    animation-duration: 0.01ms !important;
+  }
+
+  .btn-micro:hover,
+  .btn-primary-micro:hover,
+  .btn-secondary-micro:hover,
+  .card-micro:hover,
+  .card-grow-micro:hover,
+  .list-item-micro:hover {
+    transform: none !important;
+  }
+}
